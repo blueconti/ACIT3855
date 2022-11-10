@@ -1,0 +1,101 @@
+openapi: 3.0.0
+servers: [] 
+#  - url : 'http://localhost:8080'
+info:
+  description: This is an application for booking camp sites that allows clients to book the place.
+  version: "1.0.0"
+  title: Booking camp sites API
+  contact:
+    email: hhchang1234@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: clients
+    description: Operations available to regular clients
+  - name: staff
+    description: Operations available to regular staff
+paths:
+   /book/make_reservation:
+     post:
+       tags:
+        - clients
+       summary: make a reservation for camp sites
+       operationId: app.book_campsite
+       description: Adds reservation to the system
+       requestBody:
+         content:
+           application/json:
+             schema:
+               $ref: '#/components/schemas/Book'
+         description: Book a camp site
+  
+       responses:
+         '201':
+           description: reservation created
+         '400':
+           description: 'invalid input'
+   /book/payments:
+     post:
+       tags:
+        - staff
+       summary: Reporting payment
+       operationId: app.payment
+       description: Adds payment to the system
+       requestBody:
+         content:
+           application/json:
+             schema:
+               $ref: '#/components/schemas/Payment'
+         description: Payment for booking camp site
+       responses:
+         '201':
+           description: payment created
+         '400':
+           description: 'invalid input'
+components:
+  schemas:
+    Book:
+      type: object
+      required:
+        - book_id
+        - client_id
+        - campsite
+        - number_of_guests
+        - timestamp
+      properties:
+        book_id:
+          type: string
+          format: uuid
+        client_id:
+          type: string
+          format: uuid
+        campsite:
+          type: string
+        number_of_guests:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+    Payment:
+      type: object
+      required:
+        - payment_id
+        - client_id
+        - campsite
+        - number_of_guests
+        - timestamp
+      properties:
+        payment_id:
+          type: string
+          format: uuid
+        client_id:
+          type: string
+          format: uuid
+        campsite:
+          type: string
+        number_of_guests:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time

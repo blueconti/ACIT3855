@@ -1,0 +1,65 @@
+openapi: 3.0.0
+servers: []
+#  - url : 'http://localhost:8080'
+info:
+  description: This is an application for booking camp sites that allows clients to book the place.
+  version: "1.0.0"
+  title: Booking camp sites API
+  contact:
+    email: hhchang1234@gmail.com
+  license:
+    name: Apache 2.0
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+tags:
+  - name: stats
+    description: Operations available to get stats
+
+paths:
+  /book/get_stats:
+    get:
+      tags:
+        - stats
+      summary: gets book stats
+      operationId: app.get_stats
+      description: Gets book and payment details statistics
+      responses:
+        "200":
+          description: Successfully returned a list of book and payment events
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/BookStats"
+        "400":
+          description: "invalid request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+components:
+  schemas:
+    BookStats:
+      required:
+        - num_book
+        - num_payment
+        - sum_book_total
+        - avg_book_total
+      properties:
+        num_book:
+          type: integer
+          example: 500000
+        sum_book_total:
+          type: integer
+          example: 2000000
+        avg_book_total:
+          type: integer
+          example: 2000000
+        num_payment:
+          type: integer
+          example: 500000
+      type: object

@@ -1,0 +1,138 @@
+openapi: 3.0.0
+servers: [] 
+#  - url : 'http://localhost:8080'
+info:
+  description: This is an application for booking camp sites that allows clients to book the place.
+  version: "1.0.0"
+  title: Booking camp sites API
+  contact:
+    email: hhchang1234@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: clients
+    description: Operations available to regular clients
+  - name: staff
+    description: Operations available to regular staff
+paths:
+   /book/make_reservation:
+     get:
+       tags:
+         - clients
+       summary: gets reservation details
+       operationId: app.get_book_campsite
+       description: Gets campsite details added after a timestamp
+       parameters:
+         - name: timestamp
+           in: query
+           description: Limits the number of items on a page
+           schema:
+             type: string
+             format: date-time
+             example: "2016-08-29T09:12:33.001Z"
+       responses:
+         "200":
+           description: Successfully returned a list of campsite events
+           content:
+             application/json:
+               schema:
+                 type: array
+                 items:
+                   $ref: "#/components/schemas/Book"
+         "400":
+           description: "invalid request"
+           content:
+             application/json:
+               schema:
+                 type: object
+                 properties:
+                   message:
+                     type: string
+   /book/payments:
+     get:
+       tags:
+         - staff
+       summary: gets payment details
+       operationId: app.get_payment
+       description: Gets payment details added after a timestamp
+       parameters:
+         - name: timestamp
+           in: query
+           description: Limits the number of items on a page
+           schema:
+             type: string
+             format: date-time
+             example: "2016-08-29T09:12:33.001Z"
+       responses:
+         "200":
+           description: Successfully returned a list of payments
+           content:
+             application/json:
+               schema:
+                 type: array
+                 items:
+                   $ref: "#/components/schemas/Payment"
+         "400":
+           description: "invalid request"
+           content:
+             application/json:
+               schema:
+                 type: object
+                 properties:
+                   message:
+                     type: string
+components:
+  schemas:
+    Book:
+      type: object
+      required:
+        - book_id
+        - campsite
+        - client_id
+        - number_of_guests
+        - timestamp
+        - trace_id
+      properties:
+        book_id:
+          type: string
+          format: uuid
+        client_id:
+          type: string
+          format: uuid
+        campsite:
+          type: string
+        number_of_guests:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+        trace_id:
+          type: string
+          format: uuid
+    Payment:
+      type: object
+      required:
+        - payment_id
+        - campsite
+        - client_id
+        - number_of_guests
+        - timestamp
+        - trace_id
+      properties:
+        payment_id:
+          type: string
+          format: uuid
+        client_id:
+          type: string
+          format: uuid
+        campsite:
+          type: string
+        number_of_guests:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+        trace_id:
+          type: string
+          format: uuid

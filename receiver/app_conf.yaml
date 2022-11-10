@@ -1,0 +1,6 @@
+version: 1
+events:
+  # hostname: 20.151.203.142
+  hostname: lab6-service.canadacentral.cloudapp.azure.com
+  port: 9092
+  topic: events
