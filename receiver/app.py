@@ -21,7 +21,7 @@ def book_campsite(body):
 
     server = f'{app_config["events"]["hostname"]}:{app_config["events"]["port"]}'
     client = KafkaClient(hosts=server)
-    topic = client.topics[app_config["events"]["topic"]]
+    topic = client.topics[str.encode(app_config["events"]["topic"])]
     producer = topic.get_sync_producer()
     msg = { "type": "Book",
         "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),

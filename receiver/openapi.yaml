@@ -63,6 +63,7 @@ components:
         - campsite
         - number_of_guests
         - timestamp
+        - trace_id
       properties:
         book_id:
           type: string
@@ -77,6 +78,9 @@ components:
         timestamp:
           type: string
           format: date-time
+        trace_id:
+          type: string
+          format: uuid
     Payment:
       type: object
       required:
@@ -85,6 +89,7 @@ components:
         - campsite
         - number_of_guests
         - timestamp
+        - trace_id
       properties:
         payment_id:
           type: string
@@ -99,3 +104,6 @@ components:
         timestamp:
           type: string
           format: date-time
+        trace_id:
+          type: string
+          format: uuid
