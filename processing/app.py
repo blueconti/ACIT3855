@@ -41,6 +41,9 @@ def populate_stats():
     if not results:
         stats = Stats(0,0,0,0,time)
     else:
+        logger.debug("Updated stats values: {}".format(stats))
+
+        logger.info("End Periodic Processing")
         stats = results.to_dict()
     
         previous_datetime = stats['last_updated']
@@ -69,10 +72,6 @@ def populate_stats():
     session.commit()
     session.close()
     return NoContent, 201
-
-    logger.debug("Updated stats values: {}".format(stats))
-
-    logger.info("End Periodic Processing")
 
 
 def get_stats():
