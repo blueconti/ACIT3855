@@ -34,45 +34,41 @@ def populate_stats():
     logger.info("Start Periodic Processing")    
 
     session = DB_SESSION()
+    time = datetime.datetime.now
     results = session.query(Stats).order_by(Stats.last_updated.desc()).first()
     session.close()
 
     if not results:
-        stats = {
-            "num_book": 0,
-            "num_payment": 0,
-            "sum_book_total": 0,
-            "avg_book_total": 0,
-            "last_updated": "2016-08-29T09:12:33"
-        }
+        stats = Stats(0,0,0,0,time)
     else:
         stats = results.to_dict()
     
-    previous_datetime = stats['last_updated']
+        previous_datetime = stats['last_updated']
 
-    get_make_reservation = requests.get(app_config['eventstore1']['url'] + "?timestamp=" + previous_datetime)
-    get_payments = requests.get(app_config['eventstore2']['url'] + "?timestamp=" + previous_datetime)
+        get_make_reservation = requests.get(app_config['eventstore1']['url'] + "?timestamp=" + previous_datetime)
+        get_payments = requests.get(app_config['eventstore2']['url'] + "?timestamp=" + previous_datetime)
 
-    stats['num_book'] = stats['num_book']
+        stats['num_book'] = stats['num_book']
 
-    stats['num_payment'] = stats['num_payment']  + len(get_payments.json())
+        stats['num_payment'] = stats['num_payment']  + len(get_payments.json())
 
-    stats['sum_book_total'] = 0 + len(get_make_reservation.json())
+        stats['sum_book_total'] = 0 + len(get_make_reservation.json())
 
-    stats['avg_book_total'] = stats['avg_book_total']
+        stats['avg_book_total'] = stats['avg_book_total']
 
-    session = DB_SESSION()
+        session = DB_SESSION()
 
-    stats_new = Stats(stats["num_book"],
-                  stats["num_payment"],
-                  stats["sum_book_total"],
-                  stats["avg_book_total"],
-                  datetime.datetime.now())
+        stats_new = Stats(stats["num_book"],
+                    stats["num_payment"],
+                    stats["sum_book_total"],
+                    stats["avg_book_total"],
+                    datetime.datetime.now())
 
-    session.add(stats_new)
+        session.add(stats_new)
 
     session.commit()
     session.close()
+    return NoContent, 201
 
     logger.debug("Updated stats values: {}".format(stats))
 
@@ -83,24 +79,22 @@ def get_stats():
     logger.info("Start Periodic Processing")
 
     session = DB_SESSION()
+    time = datetime.datetime.now
     results = session.query(Stats).order_by(Stats.last_updated.desc()).first()
     session.close()
 
     if not results:
-        stats = {
-            "num_book": 0,
-            "num_payment": 0,
-            "sum_book_total": 0,
-            "avg_book_total": 0,
-            "last_updated": "2016-08-29T09:12:33"
-        }
+        stats = Stats(0,0,0,0,time)
+        session.add(stats)
+        session.commit()
+        session.close()
+    else:
+        logger.debug(stats)
+
+        logger.info("Reuqest has completed")
         stats = results.to_dict()
+        return stats, 200
     
-    logger.debug(stats)
-
-    logger.info("Reuqest has completed")
-
-    return stats, 200
 
 
 def init_scheduler():
