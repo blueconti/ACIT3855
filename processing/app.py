@@ -94,12 +94,11 @@ def get_stats():
             "avg_book_total": 0,
             "last_updated": "2016-08-29T09:12:33"
         }
-        stats = results.to_dict()
-    
+
+    else:
+        stats = results.to_dict()    
     logger.debug(stats)
-
     logger.info("Reuqest has completed")
-
     return stats, 200
 
 
