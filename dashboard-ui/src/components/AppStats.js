@@ -46,7 +46,7 @@ export default function AppStats() {
 							<td colspan="2">Sum Book: {stats['sum_book_total']}</td>
 						</tr>
 						<tr>
-							<td colspan="2">Avg Bookc: {stats['avg_book_total']}</td>
+							<td colspan="2">Avg Book: {stats['avg_book_total']}</td>
 						</tr>
 						{/* <tr>
 							<td colspan="2">Max HR: {stats['max_bp_sys_reading']}</td>
