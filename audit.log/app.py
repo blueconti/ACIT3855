@@ -1,10 +1,11 @@
-import connexion
 import json
-from connexion import NoContent
-from pykafka import KafkaClient
 import logging.config
-import yaml
 
+import connexion
+import yaml
+from connexion import NoContent
+from flask_cors import CORS, cross_origin
+from pykafka import KafkaClient
 
 with open('app_conf.yaml', 'r') as f:
     app_config = yaml.safe_load(f.read())
@@ -63,6 +64,8 @@ def get_payment(index):
     return { "message": "Not Found"}, 404
 
 app = connexion.FlaskApp(__name__, specification_dir='')
+CORS(app.app)
+app.app.config['CORS_HEADERS'] = 'Content-Type'
 app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
 
 
