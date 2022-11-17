@@ -6,9 +6,9 @@ export default function AppStats() {
     const [stats, setStats] = useState({});
     const [error, setError] = useState(null)
 
-	const getStats = () => {
-	
-        fetch(`http://lab6-service.canadacentral.cloudapp.azure.com:8100/stats`)
+	    const getStats = () => {
+            
+        fetch(`http://lab6-service.canadacentral.cloudapp.azure.com:8100/book/get_stats`)
             .then(res => res.json())
             .then((result)=>{
 				console.log("Received Stats")
