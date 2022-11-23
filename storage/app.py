@@ -14,6 +14,8 @@ from pykafka.common import OffsetType
 from threading import Thread
 import yaml
 import logging.config
+from sqlalchemy import and_
+from time import sleep
 
 with open('log_conf.yaml', 'r') as f:
     log_config = yaml.safe_load(f.read())
@@ -30,12 +32,18 @@ DB_ENGINE = create_engine(
 Base.metadata.bind = DB_ENGINE
 DB_SESSION = sessionmaker(bind=DB_ENGINE)
 
-def get_book_campsite(timestamp):
+def get_book_campsite(start_timestamp, end_timestamp):
     """ Gets new campsite readings after the timestamp """
     session = DB_SESSION()
-    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
-    readings = session.query(BookCampsite).filter(BookCampsite.date_created >=
-                                                  timestamp_datetime)
+
+    start_timestamp_datetime = datetime.datetime.strptime(start_timestamp, "%Y-%m-%dT%H:%M:%S")
+    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%S")
+
+
+
+    readings = session.query(BookCampsite).filter(
+                                        and_(BookCampsite.date_created >= start_timestamp_datetime,
+                                        BookCampsite.date_created < end_timestamp_datetime ))
     results_list = []
 
     for reading in readings:
@@ -43,16 +51,21 @@ def get_book_campsite(timestamp):
     session.close()
 
     logger.info("Query for Book campsite readings after %s returns %d results" %
-                (timestamp, len(results_list)))
+                (start_timestamp, end_timestamp, len(results_list)))
     return results_list, 200
 
 
-def get_payment(timestamp):
+def get_payment(start_timestamp, end_timestamp):
     """ Gets new payment after the timestamp """
     session = DB_SESSION()
-    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
-    readings = session.query(Payment).filter(Payment.date_created >=
-                                             timestamp_datetime)
+
+    start_timestamp_datetime = datetime.datetime.strptime(start_timestamp, "%Y-%m-%dT%H:%M:%S")
+    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%S")
+
+
+    readings = session.query(Payment).filter(
+                                        and_(Payment.date_created >= start_timestamp_datetime,
+                                        Payment.date_created < end_timestamp_datetime ))
     results_list = []
 
     for reading in readings:
@@ -60,7 +73,7 @@ def get_payment(timestamp):
     session.close()
 
     logger.info("Query for Payment readings after %s returns %d results" %
-                (timestamp, len(results_list)))
+                (start_timestamp, end_timestamp, len(results_list)))
     return results_list, 200
 
 # Booking event
@@ -123,9 +136,19 @@ def payment(body):
 
 def process_messages():
     hostname = "%s:%d" % (app_config["events"]["hostname"],app_config["events"]["port"])
-    client = KafkaClient(hosts=hostname)
-    topic = client.topics[str.encode(app_config["events"]["topic"])]
 
+    retry_count = 0
+    while retry_count < app_config["kafka_connect"]["retry_count"]:
+        try:
+            logger.info("trying to connect, attempt: %d" % (retry_count))
+            print(hostname)
+            client = KafkaClient(hosts=hostname)
+        except:
+            logger.info("attempt %d failed, retry after 5 seconds" % (retry_count))
+            retry_count += 1
+            sleep(app_config["kafka_connect"]["sleep_time"])
+    
+    topic = client.topics[str.encode(app_config["events"]["topic"])]
     consumer = topic.get_simple_consumer(consumer_group=b'event_group',reset_offset_on_start=False, auto_offset_reset=OffsetType.LATEST)
 
     for msg in consumer:

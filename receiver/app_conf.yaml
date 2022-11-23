@@ -4,3 +4,10 @@ events:
   hostname: lab6-service.canadacentral.cloudapp.azure.com
   port: 9092
   topic: events
+kafka_connect:
+  retry_count: 10
+  sleep_time: 5
+event1:
+  url: http://localhost:8090/book/make_reservation
+event2:
+  url: http://localhost:8090/book/payments

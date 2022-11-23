@@ -24,9 +24,16 @@ paths:
        operationId: app.get_book_campsite
        description: Gets campsite details added after a timestamp
        parameters:
-         - name: timestamp
+         - name: start_timestamp
            in: query
-           description: Limits the number of items on a page
+           description: start timestamp
+           schema:
+             type: string
+             format: date-time
+             example: "2016-08-29T09:12:33.001Z"
+         - name: end_timestamp
+           in: query
+           description: end timestamp
            schema:
              type: string
              format: date-time
@@ -57,9 +64,16 @@ paths:
        operationId: app.get_payment
        description: Gets payment details added after a timestamp
        parameters:
-         - name: timestamp
+         - name: start_timestamp
            in: query
-           description: Limits the number of items on a page
+           description: start timestamp
+           schema:
+             type: string
+             format: date-time
+             example: "2016-08-29T09:12:33.001Z"
+         - name: end_timestamp
+           in: query
+           description: end timestamp
            schema:
              type: string
              format: date-time

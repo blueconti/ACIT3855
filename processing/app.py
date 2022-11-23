@@ -49,10 +49,13 @@ def populate_stats():
     else:
         stats = results.to_dict()
     
-    previous_datetime = stats['last_updated']
+    start_timestamp = stats['last_updated']
+    current_timestamp = datetime.datetime.now()
+    end_timestamp = current_timestamp.strftime("%Y-%m-%dT%H:%M:%S")
 
-    get_make_reservation = requests.get(app_config['eventstore1']['url'] + "?timestamp=" + previous_datetime)
-    get_payments = requests.get(app_config['eventstore2']['url'] + "?timestamp=" + previous_datetime)
+
+    get_make_reservation = requests.get(app_config['eventstore1']['url'] + "?start_timestamp=" + start_timestamp + "&end_timestamp=" + end_timestamp)
+    get_payments = requests.get(app_config['eventstore2']['url'] + "?start_timestamp=" + start_timestamp + "&end_timestamp=" + end_timestamp)
 
     stats['num_book'] = stats['num_book']
 
