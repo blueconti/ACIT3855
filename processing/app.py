@@ -15,6 +15,15 @@ import datetime
 from stats import Stats
 from base import Base
 from flask_cors import CORS, cross_origin
+import os
+if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
+    print("In Test Environment")
+    app_conf_file = "/config/app_conf.yml"
+    log_conf_file = "/config/log_conf.yml"
+else:
+    print("In Dev Environment")
+    app_conf_file = "app_conf.yml"
+    log_conf_file = "log_conf.yml"
 
 
 
@@ -26,6 +35,8 @@ with open('log_conf.yaml', 'r') as f:
     logging.config.dictConfig(log_config)
 
 logger = logging.getLogger('basicLogger')
+logger.info("App Conf File: %s" % app_conf_file)
+logger.info("Log Conf File: %s" % log_conf_file)
 
 DB_ENGINE = create_engine("sqlite:///%s" % app_config["datastore"]["filename"])
 Base.metadata.bind = DB_ENGINE
