@@ -121,8 +121,7 @@ services:
   health: 
     image: health
     restart: always
-    network_mode:
-      - "api.network"
+    network_mode: "host"
     depends_on:
       - "receiver"
       - "storage"
