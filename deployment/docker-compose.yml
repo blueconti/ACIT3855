@@ -82,7 +82,6 @@ services:
   processing:
     image: processing
     restart: always
-    network_mode: "host"
     ports:
       - "8100"
     networks:
