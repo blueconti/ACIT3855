@@ -15,6 +15,12 @@ tags:
     description: Operations available to get stats
 
 paths:
+  /health:
+    get:
+      operationId: app.health
+      responses:
+        '200':
+          description: Service is running
   /book/get_stats:
     get:
       tags:

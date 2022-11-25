@@ -1,0 +1,59 @@
+---
+openapi: 3.0.0
+info:
+  title: Get Stats API
+  description: This API receives input from front end website where users input the camping stats
+  contact:
+    email: hhchang1234@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers: []
+tags:
+- name: reservation
+  description: campsite usage
+paths:
+  /health_status: 
+    get: 
+      summary: Gets the health status
+      operationId: app.get_health
+      description: Gets health of services
+      responses: 
+        '200': 
+          description: Successfully returned health status
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                items: 
+                  $ref: '#/components/schemas/healthStats' 
+        '400': 
+          description: Invalid request 
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                properties: 
+                  message: 
+                    type: string
+components:
+  schemas:
+    healthStats: 
+      required: 
+      - receiver
+      - storage
+      - processing
+      - audit
+      - last_updated   
+      properties: 
+        receiver: 
+          type: string 
+        storage: 
+          type: string 
+        processing: 
+          type: string 
+        audit: 
+          type: string 
+        last_updated:
+          type: string

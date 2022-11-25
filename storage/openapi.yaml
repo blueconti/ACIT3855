@@ -16,6 +16,12 @@ tags:
   - name: staff
     description: Operations available to regular staff
 paths:
+   /health:
+     get:
+      operationId: app.health
+      responses:
+        '200':
+          description: Service is running
    /book/make_reservation:
      get:
        tags:
